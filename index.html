@@ -548,6 +548,10 @@
     var experience = document.getElementById('experience').value;
     var message = document.getElementById('message').value.trim();
 
+    var digits = phone.replace(/\D/g, '');
+    var waDigits = digits.length === 10 ? '91' + digits : digits;
+    var waLink = 'https://wa.me/' + waDigits;
+
     var text =
       'New Likho application\n' +
       'Name: ' + name + '\n' +
@@ -556,7 +560,8 @@
       (email ? 'Email: ' + email + '\n' : '') +
       (language ? 'Language: ' + language + '\n' : '') +
       (experience ? 'Prior experience: ' + experience + '\n' : '') +
-      (message ? 'Message: ' + message : '');
+      (message ? 'Message: ' + message + '\n' : '') +
+      'WhatsApp: ' + waLink;
 
     var submitBtn = form.querySelector('.submit-btn');
     submitBtn.disabled = true;
