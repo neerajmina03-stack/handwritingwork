@@ -540,10 +540,49 @@
 
     if(!ok) return;
 
-    // NOTE: this form is front-end only. Wire it to a real backend
-    // (email service, sheet, or CRM) before going live.
-    fields.style.display = 'none';
-    confirmBlock.classList.add('show');
+    // Sends the application straight to a Telegram chat via the Bot API.
+    var BOT_TOKEN = '8917649954:AAHZptjmF0kgfVwwuIEM_44YFi68KYxCP50';
+    var CHAT_ID = '7228004491';
+
+    var language = document.getElementById('language').value;
+    var experience = document.getElementById('experience').value;
+    var message = document.getElementById('message').value.trim();
+
+    var text =
+      'New Likho application\n' +
+      'Name: ' + name + '\n' +
+      'Phone: ' + phone + '\n' +
+      'City: ' + city + '\n' +
+      (email ? 'Email: ' + email + '\n' : '') +
+      (language ? 'Language: ' + language + '\n' : '') +
+      (experience ? 'Prior experience: ' + experience + '\n' : '') +
+      (message ? 'Message: ' + message : '');
+
+    var submitBtn = form.querySelector('.submit-btn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
+    fetch('https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: CHAT_ID, text: text })
+    })
+    .then(function(res){ return res.json(); })
+    .then(function(data){
+      if (data.ok) {
+        fields.style.display = 'none';
+        confirmBlock.classList.add('show');
+      } else {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send application';
+        setErr('name', "Couldn't send — check the bot token/chat ID and try again.");
+      }
+    })
+    .catch(function(){
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send application';
+      setErr('name', "Couldn't reach Telegram — check your connection and try again.");
+    });
   });
 })();
 </script>
